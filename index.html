@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <div id="chat-container">
+
+    </div>
+
+    <script>
+        let chats = [
+
+        ]
+        let start = false
+        let container = document.getElementById('chat-container')
+
+        setInterval(() => {
+            fetch('https://nodeuni.fly.dev/allChats', {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(v => v.json())
+                .then(v => {
+                    container.innerHTML = ''
+                    if (!start && v.length == chats.length) {
+                        return
+                    }
+
+                    for (let i = 0; i < v.length; i++) {
+                        if (!start && chats[i] && v[i].length == chats[i].length) {
+                            return
+                        }
+                        let ul = document.createElement('ul')
+                        let titleLI = document.createElement('li')
+
+
+
+                        titleLI.innerText = v[i][0] ? v[i][0].chatID : v[i].chatID
+                        ul.append(titleLI)
+                        container.append(ul)
+                        for (let j = 0; j < v[i].length; j++) {
+                            let li = document.createElement('li')
+                            if (v[i][j].email && v[i][j].message) {
+                                li.innerText = `Email: ${v[i][j].email} - Message: ${v[i][j].message}`
+                            }
+                            ul.append(li)
+                        }
+                    }
+                    start = true
+                    chats = v
+                })
+        }, 3000)
+
+    </script>
+</body>
+
+
+
+</html>
